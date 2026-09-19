@@ -13,16 +13,35 @@ const path = Astro.url.pathname;
 
 <header class="site-header">
   <div class="wrap header-inner">
-    <a class="brand" href={withBase('/')}>{SITE_TITLE}</a>
+    <a class="brand" href={withBase('/')}>
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+        <path
+          d="M7 5h13a5 5 0 0 1 5 5v17H12a5 5 0 0 1-5-5V5z"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.4"
+        />
+        <path d="M13 5v27" stroke="currentColor" stroke-width="2.4" />
+        <path
+          d="M18 13h3M18 18h3"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
+      </svg>
+      <span>{SITE_TITLE}</span>
+    </a>
     <nav>
-      {links.map((link) => (
-        <a
-          href={withBase(link.href)}
-          class={path === withBase(link.href) ? 'active' : ''}
-        >
-          {link.label}
-        </a>
-      ))}
+      {
+        links.map((link) => (
+          <a
+            href={withBase(link.href)}
+            class={path === withBase(link.href) ? 'active' : ''}
+          >
+            {link.label}
+          </a>
+        ))
+      }
       <a href={withBase('rss.xml')}>RSS</a>
     </nav>
   </div>

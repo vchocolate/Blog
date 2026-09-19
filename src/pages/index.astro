@@ -2,42 +2,61 @@
 import { getCollection } from 'astro:content';
 import FormattedDate from '../components/FormattedDate.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { withBase } from '../utils';
+import { readingTime, withBase } from '../utils';
 
 const posts = (
   await getCollection('blog', ({ data }) =>
     import.meta.env.PROD ? !data.draft : true
   )
 ).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const tagCount = new Set(posts.flatMap((post) => post.data.tags)).size;
 ---
 
 <BaseLayout>
-  <section class="intro">
+  <section class="hero">
+    <p class="hero-eyebrow">Personal Blog</p>
     <h1>你好，欢迎来这里坐坐</h1>
-    <p>这里记录技术、阅读与生活的片段，希望对你有所启发。</p>
+    <p class="hero-sub">
+      这里记录技术、阅读与生活的片段。不追热点，慢慢写，希望这些文字对你有所启发。
+    </p>
+    <div class="hero-actions">
+      <a class="button" href={withBase('/about/')}>关于我</a>
+      <a class="button ghost" href={withBase('rss.xml')}>订阅 RSS</a>
+    </div>
+    <p class="hero-stats">{posts.length} 篇文章 · {tagCount} 个标签 · 持续更新中</p>
   </section>
 
   <section class="post-list">
     <h2 class="section-title">最新文章</h2>
     {
       posts.map((post) => (
-        <article class="post-item">
-          <h3>
-            <a href={withBase(`/posts/${post.id}/`)}>{post.data.title}</a>
+        <article class="post-card">
+          <h3 class="post-card-title">
+            <a href={withBase(`/posts/${post.id}/`)}>
+              {post.data.title}
+              <span class="arrow" aria-hidden="true">
+                →
+              </span>
+            </a>
           </h3>
           <p class="meta">
             <FormattedDate date={post.data.pubDate} />
-            {post.data.tags.length > 0 && (
-              <span class="tags">
-                {post.data.tags.map((tag) => (
-                  <a href={withBase(`/tags/${encodeURIComponent(tag)}/`)}>
-                    #{tag}
-                  </a>
-                ))}
-              </span>
-            )}
+            <span class="dot" aria-hidden="true">
+              ·
+            </span>
+            <span>{readingTime(post.body)} 分钟阅读</span>
           </p>
-          <p>{post.data.description}</p>
+          <p class="excerpt">{post.data.description}</p>
+          {post.data.tags.length > 0 && (
+            <p class="tags">
+              {post.data.tags.map((tag) => (
+                <a href={withBase(`/tags/${encodeURIComponent(tag)}/`)}>
+                  #{tag}
+                </a>
+              ))}
+            </p>
+          )}
         </article>
       ))
     }

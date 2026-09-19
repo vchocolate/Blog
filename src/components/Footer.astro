@@ -1,14 +1,23 @@
 ---
-import { GITHUB_URL, SITE_AUTHOR } from '../consts';
+import { GITHUB_URL, SITE_AUTHOR, SITE_TITLE } from '../consts';
+import { withBase } from '../utils';
 
 const year = new Date().getFullYear();
 ---
 
 <footer class="site-footer">
-  <div class="wrap">
-    <p>
-      © {year} {SITE_AUTHOR} · <a href={GITHUB_URL}>GitHub</a> · 由
-      <a href="https://astro.build">Astro</a> 驱动
-    </p>
+  <div class="wrap footer-inner">
+    <div class="footer-brand">
+      <p class="footer-title">{SITE_TITLE}</p>
+      <p class="footer-note">以文字记录技术与生活。</p>
+    </div>
+    <nav class="footer-nav">
+      <a href={withBase('rss.xml')}>RSS</a>
+      <a href={GITHUB_URL}>GitHub</a>
+      <a href={withBase('/about/')}>关于</a>
+    </nav>
+  </div>
+  <div class="wrap footer-bottom">
+    <p>© {year} {SITE_AUTHOR} · 由 <a href="https://astro.build">Astro</a> 构建并托管于 GitHub Pages</p>
   </div>
 </footer>

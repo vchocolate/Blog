@@ -2,7 +2,7 @@
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import FormattedDate from '../../components/FormattedDate.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { withBase } from '../../utils';
+import { readingTime, withBase } from '../../utils';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) =>
@@ -29,6 +29,8 @@ const { Content } = await render(post);
       <h1>{post.data.title}</h1>
       <p class="meta">
         <FormattedDate date={post.data.pubDate} />
+        <span class="dot" aria-hidden="true">·</span>
+        <span>{readingTime(post.body)} 分钟阅读</span>
         {post.data.updatedDate && (
           <span>
             更新于
