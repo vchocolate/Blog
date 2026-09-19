@@ -2,6 +2,9 @@
 
 基于 Astro 的个人博客，托管在 GitHub Pages。
 
+- 线上地址：<https://vchocolate.github.io/Blog/>
+- 仓库地址：<https://github.com/vchocolate/Blog>
+
 ## 技术栈
 
 - Astro 7（静态输出，无客户端框架）
