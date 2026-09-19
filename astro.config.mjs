@@ -5,4 +5,10 @@ export default defineConfig({
   site: 'https://vchocolate.github.io',
   base: '/Blog',
   integrations: [sitemap()],
+  markdown: {
+    shikiConfig: {
+      themes: { light: 'rose-pine-dawn', dark: 'rose-pine' },
+      wrap: false,
+    },
+  },
 });
