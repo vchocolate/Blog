@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase } from '../utils';
+---
+
+<BaseLayout title="页面不存在" description="404 - 页面不存在">
+  <section class="intro">
+    <h1>404 · 这里什么都没有</h1>
+    <p>你访问的页面不存在，也可能已经被移动。</p>
+    <p><a href={withBase('/')}>返回首页</a></p>
+  </section>
+</BaseLayout>

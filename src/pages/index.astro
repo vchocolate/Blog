@@ -1,0 +1,46 @@
+---
+import { getCollection } from 'astro:content';
+import FormattedDate from '../components/FormattedDate.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase } from '../utils';
+
+const posts = (
+  await getCollection('blog', ({ data }) =>
+    import.meta.env.PROD ? !data.draft : true
+  )
+).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<BaseLayout>
+  <section class="intro">
+    <h1>你好，欢迎来这里坐坐</h1>
+    <p>这里记录技术、阅读与生活的片段，希望对你有所启发。</p>
+  </section>
+
+  <section class="post-list">
+    <h2 class="section-title">最新文章</h2>
+    {
+      posts.map((post) => (
+        <article class="post-item">
+          <h3>
+            <a href={withBase(`/posts/${post.id}/`)}>{post.data.title}</a>
+          </h3>
+          <p class="meta">
+            <FormattedDate date={post.data.pubDate} />
+            {post.data.tags.length > 0 && (
+              <span class="tags">
+                {post.data.tags.map((tag) => (
+                  <a href={withBase(`/tags/${encodeURIComponent(tag)}/`)}>
+                    #{tag}
+                  </a>
+                ))}
+              </span>
+            )}
+          </p>
+          <p>{post.data.description}</p>
+        </article>
+      ))
+    }
+    {posts.length === 0 && <p>还没有文章，去 src/content/blog 里写一篇吧。</p>}
+  </section>
+</BaseLayout>

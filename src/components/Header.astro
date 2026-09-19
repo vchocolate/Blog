@@ -1,0 +1,29 @@
+---
+import { SITE_TITLE } from '../consts';
+import { withBase } from '../utils';
+
+const links = [
+  { href: '/', label: '首页' },
+  { href: '/tags/', label: '标签' },
+  { href: '/about/', label: '关于' },
+];
+
+const path = Astro.url.pathname;
+---
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href={withBase('/')}>{SITE_TITLE}</a>
+    <nav>
+      {links.map((link) => (
+        <a
+          href={withBase(link.href)}
+          class={path === withBase(link.href) ? 'active' : ''}
+        >
+          {link.label}
+        </a>
+      ))}
+      <a href={withBase('rss.xml')}>RSS</a>
+    </nav>
+  </div>
+</header>

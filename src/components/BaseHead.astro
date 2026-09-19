@@ -1,0 +1,29 @@
+---
+import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { withBase } from '../utils';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description = SITE_DESCRIPTION } = Astro.props;
+const pageTitle = title ? `${title} · ${SITE_TITLE}` : SITE_TITLE;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{pageTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+<link rel="icon" type="image/svg+xml" href={withBase('favicon.svg')} />
+<link rel="alternate" type="application/rss+xml" title={SITE_TITLE} href={withBase('rss.xml')} />
+<meta name="generator" content={Astro.generator} />
+<meta property="og:type" content="website" />
+<meta property="og:title" content={pageTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta name="twitter:card" content="summary" />
+<meta name="theme-color" content="#f7f1e6" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#1f1a16" media="(prefers-color-scheme: dark)" />

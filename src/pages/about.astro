@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_AUTHOR } from '../consts';
+---
+
+<BaseLayout title="关于" description={`关于 ${SITE_AUTHOR} 和这个博客。`}>
+  <article class="prose">
+    <h1>关于</h1>
+    <p>
+      你好，我是{SITE_AUTHOR}，一名喜欢折腾的开发者。这个博客用来记录学习笔记、技术实践，
+      以及一些生活里的观察。
+    </p>
+    <h2>关于这个站点</h2>
+    <p>
+      站点使用 <a href="https://astro.build">Astro</a> 构建，托管在 GitHub Pages
+      上，风格取向是安静、耐读。文章以 Markdown 编写，内容与代码都在
+      <a href="https://github.com">GitHub</a> 上开源。
+    </p>
+    <h2>联系我</h2>
+    <p>如果你想交流，欢迎通过 GitHub 或邮件找到我。</p>
+  </article>
+</BaseLayout>
