@@ -4,6 +4,7 @@ description: 从 FILE 指针到常用读写函数：fopen 模式、fprintf/fscan
 pubDate: 2026-09-15
 tags: ['C语言', '学习笔记']
 draft: false
+series: 'C 语言学习笔记'
 ---
 
 程序运行结束数据就没了，要持久保存就得写进文件。

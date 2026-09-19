@@ -4,6 +4,7 @@ description: 格式化输入输出完全指南：常用格式说明符、宽度�
 pubDate: 2026-08-24
 tags: ['C语言', '学习笔记']
 draft: false
+series: 'C 语言学习笔记'
 ---
 
 程序的交互离不开输入输出。`printf` 和 `scanf` 用起来简单，但坑不少。

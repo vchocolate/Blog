@@ -4,6 +4,7 @@ description: 整型、浮点、字符类型的取值范围与内存占用，size
 pubDate: 2026-08-20
 tags: ['C语言', '学习笔记']
 draft: false
+series: 'C 语言学习笔记'
 ---
 
 程序 = 数据 + 算法。这一篇讲数据怎么存。

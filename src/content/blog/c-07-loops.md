@@ -4,6 +4,7 @@ description: 三种循环的语法与选择，break 与 continue 的差别，循
 pubDate: 2026-08-28
 tags: ['C语言', '学习笔记']
 draft: false
+series: 'C 语言学习笔记'
 ---
 
 计算机最擅长做重复的事，循环就是让它不停干活的结构。

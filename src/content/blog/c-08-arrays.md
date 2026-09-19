@@ -4,6 +4,7 @@ description: 数组的定义、初始化与遍历，越界的危害，最大值/
 pubDate: 2026-08-30
 tags: ['C语言', '学习笔记']
 draft: false
+series: 'C 语言学习笔记'
 ---
 
 要存一组同类型的数据，就用数组。

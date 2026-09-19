@@ -4,6 +4,7 @@ description: 从编译原理到动手实践：安装 GCC、配置 VS Code，理�
 pubDate: 2026-08-18
 tags: ['C语言', '学习笔记']
 draft: false
+series: 'C 语言学习笔记'
 ---
 
 工欲善其事，必先利其器。这一篇把环境搭好，并跑通第一个程序。

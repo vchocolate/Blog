@@ -6,13 +6,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { getGithubContributions, getGithubProfile } from '../lib/github';
 import { readingTime, withBase } from '../utils';
 
-const posts = (
+const allPosts = (
   await getCollection('blog', ({ data }) =>
     import.meta.env.PROD ? !data.draft : true
   )
 ).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
-const tagCount = new Set(posts.flatMap((post) => post.data.tags)).size;
+const posts = allPosts.slice(0, 10);
+
+const tagCount = new Set(allPosts.flatMap((post) => post.data.tags)).size;
 
 const [profile, contributions] = await Promise.all([
   getGithubProfile(),
@@ -31,7 +33,7 @@ const [profile, contributions] = await Promise.all([
       <a class="button" href={withBase('/about/')}>关于我</a>
       <a class="button ghost" href={withBase('rss.xml')}>订阅 RSS</a>
     </div>
-    <p class="hero-stats">{posts.length} 篇文章 · {tagCount} 个标签 · 持续更新中</p>
+    <p class="hero-stats">{allPosts.length} 篇文章 · {tagCount} 个标签 · 持续更新中</p>
   </section>
 
   <section class="profile-section">
@@ -72,5 +74,14 @@ const [profile, contributions] = await Promise.all([
       ))
     }
     {posts.length === 0 && <p>还没有文章，去 src/content/blog 里写一篇吧。</p>}
+    {
+      allPosts.length > posts.length && (
+        <p class="more-link">
+          <a class="button ghost" href={withBase('/archive/')}>
+            查看全部 {allPosts.length} 篇文章 →
+          </a>
+        </p>
+      )
+    }
   </section>
 </BaseLayout>

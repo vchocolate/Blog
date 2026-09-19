@@ -1,0 +1,52 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase } from '../utils';
+
+const posts = await getCollection('blog', ({ data }) =>
+  import.meta.env.PROD ? !data.draft : true
+);
+
+const seriesMap = new Map<string, CollectionEntry<'blog'>[]>();
+for (const post of posts) {
+  const name = post.data.series;
+  if (!name) continue;
+  if (!seriesMap.has(name)) seriesMap.set(name, []);
+  seriesMap.get(name)!.push(post);
+}
+
+const seriesList = [...seriesMap.entries()].map(([name, items]) => ({
+  name,
+  items: items.sort((a, b) => a.data.pubDate.valueOf() - b.data.pubDate.valueOf()),
+}));
+---
+
+<BaseLayout title="系列" description="按主题组织的连续文章。">
+  <section>
+    <h1>系列</h1>
+    <p class="page-sub">按主题组织的连续文章，适合按顺序阅读。</p>
+    {
+      seriesList.map(({ name, items }) => (
+        <div class="series-card">
+          <h2>{name}</h2>
+          <p class="series-meta">共 {items.length} 篇 · 建议按顺序阅读</p>
+          <ol class="series-list">
+            {items.map((post, index) => (
+              <li>
+                <span class="num">{index + 1}</span>
+                <a href={withBase(`/posts/${post.id}/`)}>{post.data.title}</a>
+                <time datetime={post.data.pubDate.toISOString()}>
+                  {post.data.pubDate.toLocaleDateString('zh-CN', {
+                    month: '2-digit',
+                    day: '2-digit',
+                  })}
+                </time>
+              </li>
+            ))}
+          </ol>
+        </div>
+      ))
+    }
+    {seriesList.length === 0 && <p>还没有系列文章。</p>}
+  </section>
+</BaseLayout>

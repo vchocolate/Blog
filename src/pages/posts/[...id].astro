@@ -2,7 +2,8 @@
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import FormattedDate from '../../components/FormattedDate.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { readingTime, withBase } from '../../utils';
+import { GITHUB_URL, SITE_AUTHOR } from '../../consts';
+import { readingTime, withBase, wordCount } from '../../utils';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) =>
@@ -20,17 +21,62 @@ interface Props {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
+
+const allPosts = await getCollection('blog', ({ data }) =>
+  import.meta.env.PROD ? !data.draft : true
+);
+
+const byDateAsc = [...allPosts].sort(
+  (a, b) => a.data.pubDate.valueOf() - b.data.pubDate.valueOf()
+);
+const byDateDesc = [...byDateAsc].reverse();
+
+const seriesItems = post.data.series
+  ? byDateAsc.filter((item) => item.data.series === post.data.series)
+  : [];
+const seriesIndex = seriesItems.findIndex((item) => item.id === post.id);
+const series =
+  post.data.series && seriesIndex >= 0
+    ? {
+        name: post.data.series,
+        index: seriesIndex + 1,
+        total: seriesItems.length,
+        prev: seriesItems[seriesIndex - 1],
+        next: seriesItems[seriesIndex + 1],
+      }
+    : null;
+
+const globalIndex = byDateDesc.findIndex((item) => item.id === post.id);
+const newer = byDateDesc[globalIndex - 1];
+const older = byDateDesc[globalIndex + 1];
+
+const toc = headings.filter(
+  (heading) => heading.depth === 2 || heading.depth === 3
+);
+const showToc = toc.length >= 3;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.pubDate.toISOString(),
+  dateModified: (post.data.updatedDate ?? post.data.pubDate).toISOString(),
+  author: { '@type': 'Person', name: SITE_AUTHOR, url: GITHUB_URL },
+  mainEntityOfPage: new URL(Astro.url.pathname, Astro.site).toString(),
+};
 ---
 
 <BaseLayout title={post.data.title} description={post.data.description}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   <article class="prose">
     <header class="post-header">
       <h1>{post.data.title}</h1>
       <p class="meta">
         <FormattedDate date={post.data.pubDate} />
         <span class="dot" aria-hidden="true">·</span>
-        <span>{readingTime(post.body)} 分钟阅读</span>
+        <span>约 {wordCount(post.body)} 字 · {readingTime(post.body)} 分钟阅读</span>
         {post.data.updatedDate && (
           <span>
             更新于
@@ -40,14 +86,118 @@ const { Content } = await render(post);
         {post.data.tags.length > 0 && (
           <span class="tags">
             {post.data.tags.map((tag) => (
-              <a href={withBase(`/tags/${encodeURIComponent(tag)}/`)}>
-                #{tag}
-              </a>
+              <a href={withBase(`/tags/${encodeURIComponent(tag)}/`)}>#{tag}</a>
             ))}
           </span>
         )}
       </p>
+      {
+        series && (
+          <p class="series-banner">
+            本文是系列《<a href={withBase('/series/')}>{series.name}</a>》第{' '}
+            <strong>{series.index}</strong> 篇，共 {series.total} 篇
+          </p>
+        )
+      }
     </header>
+
+    {
+      showToc && (
+        <nav class="toc">
+          <details open>
+            <summary>本文目录</summary>
+            <ul>
+              {toc.map((heading) => (
+                <li class={`toc-depth-${heading.depth}`}>
+                  <a href={`#${heading.slug}`}>{heading.text}</a>
+                </li>
+              ))}
+            </ul>
+          </details>
+        </nav>
+      )
+    }
+
     <Content />
+
+    {
+      series ? (
+        <nav class="post-nav">
+          {series.prev ? (
+            <a
+              class="post-nav-link prev"
+              href={withBase(`/posts/${series.prev.id}/`)}
+            >
+              <span class="post-nav-label">← 系列上一篇</span>
+              <span class="post-nav-title">{series.prev.data.title}</span>
+            </a>
+          ) : (
+            <span class="post-nav-placeholder" />
+          )}
+          {series.next ? (
+            <a
+              class="post-nav-link next"
+              href={withBase(`/posts/${series.next.id}/`)}
+            >
+              <span class="post-nav-label">系列下一篇 →</span>
+              <span class="post-nav-title">{series.next.data.title}</span>
+            </a>
+          ) : (
+            <span class="post-nav-placeholder" />
+          )}
+        </nav>
+      ) : (
+        <nav class="post-nav">
+          {older ? (
+            <a
+              class="post-nav-link prev"
+              href={withBase(`/posts/${older.id}/`)}
+            >
+              <span class="post-nav-label">← 较早一篇</span>
+              <span class="post-nav-title">{older.data.title}</span>
+            </a>
+          ) : (
+            <span class="post-nav-placeholder" />
+          )}
+          {newer ? (
+            <a
+              class="post-nav-link next"
+              href={withBase(`/posts/${newer.id}/`)}
+            >
+              <span class="post-nav-label">较新一篇 →</span>
+              <span class="post-nav-title">{newer.data.title}</span>
+            </a>
+          ) : (
+            <span class="post-nav-placeholder" />
+          )}
+        </nav>
+      )
+    }
   </article>
+
+  <script>
+    document.querySelectorAll('.prose pre').forEach((pre) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'code-wrap';
+      pre.parentNode.insertBefore(wrap, pre);
+      wrap.appendChild(pre);
+
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'copy-code';
+      button.textContent = '复制';
+      button.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(pre.innerText);
+          button.textContent = '已复制';
+        } catch {
+          button.textContent = '复制失败';
+        }
+        setTimeout(() => {
+          button.textContent = '复制';
+        }, 1500);
+      });
+      wrap.appendChild(button);
+    });
+  </script>
 </BaseLayout>

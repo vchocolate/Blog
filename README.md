@@ -31,6 +31,7 @@ title: 文章标题
 description: 一句话摘要（用于列表和 SEO）
 pubDate: 2026-09-19
 tags: ['标签一', '标签二']
+series: '系列名称'   # 可选：填写后自动生成系列进度与上下篇导航
 draft: false
 ---
 
@@ -40,7 +41,17 @@ draft: false
 - 文件名即文章 URL：`hello-world.md` → `/posts/hello-world/`
 - `draft: true` 仅在本地可见，线上构建自动排除
 - 可选 `updatedDate` 显示更新日期
+- 可选 `series` 标记系列文章，同一系列按发布日期排序
 - 新增/修改后推送 `main` 分支即自动部署
+
+## 功能一览
+
+- 首页展示最近 10 篇文章，完整列表见 `/archive/` 归档页（按年份分组）
+- `/series/` 系列页：按主题聚合连续文章，文章页带「第 N 篇 / 共 M 篇」与上下篇导航
+- 文章页自动生成目录（TOC，二级/三级标题）、字数统计与阅读时长
+- 代码块悬停显示「复制」按钮（渐进增强，无 JS 时不影响阅读）
+- SEO：sitemap、RSS、robots.txt、Open Graph、JSON-LD（BlogPosting）结构化数据
+- 标签页、深色模式、响应式布局、减少动效偏好支持
 
 ## 站点配置
 

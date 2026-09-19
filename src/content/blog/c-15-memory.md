@@ -4,6 +4,7 @@ description: 程序的内存布局、栈与堆的区别、malloc/calloc/realloc/
 pubDate: 2026-09-13
 tags: ['C语言', '学习笔记']
 draft: false
+series: 'C 语言学习笔记'
 ---
 
 数组长度写死不够灵活，动态内存让你在运行时决定要多少内存。

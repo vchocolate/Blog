@@ -4,6 +4,7 @@ description: 条件判断的两种写法：if/else 与 switch/case，重点讲�
 pubDate: 2026-08-26
 tags: ['C语言', '学习笔记']
 draft: false
+series: 'C 语言学习笔记'
 ---
 
 程序要做判断，就有了选择结构。这一篇讲两种判断写法。

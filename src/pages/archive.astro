@@ -1,0 +1,55 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { readingTime, withBase } from '../utils';
+
+const posts = (
+  await getCollection('blog', ({ data }) =>
+    import.meta.env.PROD ? !data.draft : true
+  )
+).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const years = new Map<number, CollectionEntry<'blog'>[]>();
+for (const post of posts) {
+  const year = post.data.pubDate.getFullYear();
+  if (!years.has(year)) years.set(year, []);
+  years.get(year)!.push(post);
+}
+
+const grouped = [...years.entries()].sort((a, b) => b[0] - a[0]);
+---
+
+<BaseLayout title="归档" description={`全部文章，共 ${posts.length} 篇，按时间倒序排列。`}>
+  <section>
+    <h1>归档</h1>
+    <p class="page-sub">共 {posts.length} 篇文章，按时间倒序排列。</p>
+    {
+      grouped.map(([year, items]) => (
+        <div class="archive-group">
+          <h2 class="archive-year">
+            {year}
+            <span class="count">{items.length} 篇</span>
+          </h2>
+          <ul class="archive-list">
+            {items.map((post) => (
+              <li>
+                <time datetime={post.data.pubDate.toISOString()}>
+                  {post.data.pubDate.toLocaleDateString('zh-CN', {
+                    month: '2-digit',
+                    day: '2-digit',
+                  })}
+                </time>
+                <a href={withBase(`/posts/${post.id}/`)}>
+                  {post.data.title}
+                </a>
+                <span class="archive-time">
+                  {readingTime(post.body)} 分钟
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </section>
+</BaseLayout>
