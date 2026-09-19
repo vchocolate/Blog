@@ -1,7 +1,9 @@
 ---
 import { getCollection } from 'astro:content';
 import FormattedDate from '../components/FormattedDate.astro';
+import ProfileCard from '../components/ProfileCard.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getGithubContributions, getGithubProfile } from '../lib/github';
 import { readingTime, withBase } from '../utils';
 
 const posts = (
@@ -11,6 +13,11 @@ const posts = (
 ).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 const tagCount = new Set(posts.flatMap((post) => post.data.tags)).size;
+
+const [profile, contributions] = await Promise.all([
+  getGithubProfile(),
+  getGithubContributions(),
+]);
 ---
 
 <BaseLayout>
@@ -25,6 +32,10 @@ const tagCount = new Set(posts.flatMap((post) => post.data.tags)).size;
       <a class="button ghost" href={withBase('rss.xml')}>订阅 RSS</a>
     </div>
     <p class="hero-stats">{posts.length} 篇文章 · {tagCount} 个标签 · 持续更新中</p>
+  </section>
+
+  <section class="profile-section">
+    <ProfileCard profile={profile} contributions={contributions} />
   </section>
 
   <section class="post-list">

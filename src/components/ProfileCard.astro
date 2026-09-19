@@ -1,0 +1,106 @@
+---
+import { GITHUB_URL, GITHUB_USERNAME } from '../consts';
+import type { ContributionGrid, GithubProfile } from '../lib/github';
+
+interface Props {
+  profile: GithubProfile | null;
+  contributions: ContributionGrid | null;
+}
+
+const { profile, contributions } = Astro.props;
+
+const login = profile?.login ?? GITHUB_USERNAME;
+const displayName = profile?.name?.trim() || login;
+const avatar = profile?.avatar_url ?? `https://github.com/${GITHUB_USERNAME}.png?size=144`;
+const createdYear = profile ? new Date(profile.created_at).getFullYear() : null;
+
+const stats = profile
+  ? [
+      { label: '仓库', value: profile.public_repos },
+      { label: '关注者', value: profile.followers },
+      { label: '正在关注', value: profile.following },
+      { label: '加入于', value: createdYear },
+    ]
+  : [];
+
+const range = contributions
+  ? `${contributions.from.replaceAll('-', '.')} — ${contributions.to.replaceAll('-', '.')}`
+  : '';
+---
+
+<aside class="profile-card">
+  <div class="profile-head">
+    <img
+      class="profile-avatar"
+      src={avatar}
+      alt={`${login} 的头像`}
+      width="72"
+      height="72"
+      loading="lazy"
+      decoding="async"
+    />
+    <div class="profile-id">
+      <p class="profile-name">{displayName}</p>
+      <a class="profile-login" href={GITHUB_URL} rel="me">@{login}</a>
+      {profile?.bio && <p class="profile-bio">{profile.bio}</p>}
+    </div>
+    {
+      stats.length > 0 && (
+        <dl class="profile-stats">
+          {stats.map((stat) => (
+            <div class="profile-stat">
+              <dt>{stat.label}</dt>
+              <dd>{stat.value}</dd>
+            </div>
+          ))}
+        </dl>
+      )
+    }
+  </div>
+
+  {
+    contributions && (
+      <div class="profile-heatmap">
+        <div class="heatmap-head">
+          <span>近一年贡献</span>
+          <span class="heatmap-total">
+            <strong>{contributions.total}</strong> 次
+          </span>
+        </div>
+        <div class="heatmap-scroll">
+          <div class="heatmap" role="img" aria-label={`近一年共 ${contributions.total} 次贡献`}>
+            {contributions.weeks.map((week) => (
+              <div class="heatmap-week">
+                {week.map((day) =>
+                  day ? (
+                    <span
+                      class="heatmap-cell"
+                      data-level={day.level}
+                      title={`${day.date} · ${day.count} 次贡献`}
+                    />
+                  ) : (
+                    <span class="heatmap-cell is-empty" />
+                  )
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+        <div class="heatmap-foot">
+          <span>{range}</span>
+          <span class="heatmap-legend" aria-hidden="true">
+            少
+            <i class="heatmap-cell" data-level="0" />
+            <i class="heatmap-cell" data-level="1" />
+            <i class="heatmap-cell" data-level="2" />
+            <i class="heatmap-cell" data-level="3" />
+            <i class="heatmap-cell" data-level="4" />
+            多
+          </span>
+        </div>
+      </div>
+    )
+  }
+
+  <a class="profile-link" href={GITHUB_URL}>访问 GitHub 主页 →</a>
+</aside>

@@ -9,6 +9,11 @@
   --border: #e7dcc8;
   --border-strong: #d9c9ab;
   --code-bg: #efe4d2;
+  --heat-0: #ece1cd;
+  --heat-1: #f0d3b2;
+  --heat-2: #dfae80;
+  --heat-3: #c5804e;
+  --heat-4: #a3541e;
   --shadow: 0 18px 40px -28px rgba(90, 58, 28, 0.55);
   --glow: radial-gradient(60rem 30rem at 12% -10%, rgba(179, 84, 30, 0.1), transparent 60%);
   --radius: 14px;
@@ -30,6 +35,11 @@
     --border: #352c24;
     --border-strong: #4a3d31;
     --code-bg: #2a231c;
+    --heat-0: #2b241d;
+    --heat-1: #4a3726;
+    --heat-2: #6e4a2b;
+    --heat-3: #9a6238;
+    --heat-4: #e09b62;
     --shadow: 0 20px 40px -26px rgba(0, 0, 0, 0.8);
     --glow: radial-gradient(60rem 30rem at 12% -10%, rgba(224, 155, 98, 0.08), transparent 60%);
   }
@@ -254,6 +264,198 @@ main {
   font-size: 0.82rem;
   color: var(--muted);
   margin: 1.3rem 0 0;
+}
+
+.profile-section {
+  margin-bottom: 2.4rem;
+  animation: rise 0.5s ease-out both;
+}
+
+.profile-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.4rem 1.5rem 1.2rem;
+  box-shadow: var(--shadow);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.profile-card:hover {
+  border-color: var(--border-strong);
+}
+
+.profile-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem 1.25rem;
+}
+
+.profile-avatar {
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 50%;
+  border: 2px solid var(--border-strong);
+  background: var(--bg-soft);
+  flex: none;
+}
+
+.profile-id {
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
+.profile-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.profile-login {
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.profile-login:hover {
+  color: var(--accent-strong);
+}
+
+.profile-bio {
+  margin: 0.3rem 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+
+.profile-stats {
+  display: flex;
+  gap: 1.7rem;
+  margin: 0;
+}
+
+.profile-stat {
+  text-align: center;
+}
+
+.profile-stat dt {
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.profile-stat dd {
+  margin: 0.15rem 0 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.profile-heatmap {
+  margin-top: 1.3rem;
+  padding-top: 1.2rem;
+  border-top: 1px dashed var(--border);
+}
+
+.heatmap-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 0.7rem;
+}
+
+.heatmap-total strong {
+  color: var(--accent);
+  font-size: 1.05rem;
+  margin-right: 0.15rem;
+}
+
+.heatmap-scroll {
+  overflow-x: auto;
+  padding-bottom: 0.3rem;
+}
+
+.heatmap {
+  display: flex;
+  gap: 3px;
+  width: max-content;
+}
+
+.heatmap-week {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.heatmap-cell {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2.5px;
+  background: var(--heat-0);
+}
+
+.heatmap-cell[data-level="1"] {
+  background: var(--heat-1);
+}
+
+.heatmap-cell[data-level="2"] {
+  background: var(--heat-2);
+}
+
+.heatmap-cell[data-level="3"] {
+  background: var(--heat-3);
+}
+
+.heatmap-cell[data-level="4"] {
+  background: var(--heat-4);
+}
+
+.heatmap-cell.is-empty {
+  visibility: hidden;
+}
+
+.heatmap-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin-top: 0.7rem;
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.heatmap-legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.heatmap-legend .heatmap-cell {
+  width: 9px;
+  height: 9px;
+}
+
+.profile-link {
+  display: inline-block;
+  margin-top: 1.1rem;
+  font-family: var(--sans);
+  font-size: 0.88rem;
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.profile-link:hover {
+  color: var(--accent-strong);
 }
 
 .section-title {
@@ -683,6 +885,16 @@ main {
 
   .footer-inner {
     flex-direction: column;
+  }
+
+  .profile-head {
+    align-items: flex-start;
+  }
+
+  .profile-stats {
+    width: 100%;
+    justify-content: space-between;
+    gap: 1rem;
   }
 }
 

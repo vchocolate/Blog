@@ -52,6 +52,14 @@ draft: false
 | `astro.config.mjs` | `base` | `/Blog`（必须与仓库名大小写一致，改名需同步修改） |
 | `src/consts.ts` | `SITE_TITLE` / `SITE_DESCRIPTION` / `SITE_AUTHOR` / `GITHUB_URL` | 站点标题、描述、作者、GitHub 链接 |
 
+## 首页名片
+
+首页名片（头像、ID、统计数据、贡献热力图）在构建时从 GitHub API 抓取：
+
+- Actions 构建自动注入 `GITHUB_TOKEN`，数据完整且不受限流影响
+- 本地构建如需完整数据，可先设置环境变量（如 `$env:GITHUB_TOKEN="..."`），否则可能触发匿名限流，名片自动降级显示
+- 工作流每天 UTC 03:17 定时重建一次，保持贡献数据更新；也可在 Actions 页面手动触发
+
 ## 部署（GitHub Pages）
 
 1. 在 GitHub 创建仓库 `vchocolate/Blog`（公开仓库）
